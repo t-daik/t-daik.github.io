@@ -1,0 +1,8 @@
+name: "my-website"
+navbar:
+  title: "Data Taro"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
