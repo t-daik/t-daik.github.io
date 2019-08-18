@@ -11,7 +11,7 @@
 
 
 
-<title>Data Taro</title>
+<title>Fuzzy matching with fuzzyjoin package</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -279,7 +279,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Data Taro</a>
+      <a class="navbar-brand" href="index.html">My Website</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -301,14 +301,41 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Data Taro</h1>
+<h1 class="title toc-ignore">Fuzzy matching with fuzzyjoin package</h1>
 
 </div>
 
 
-<p>Hello World. I’m data analyst in Tokyo, Japan. More specifically, I like R and RStudio very much. RStudio is my new Play Station.</p>
-<p>For more information about simple R Markdown websites, please read the documentation at <a href="https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html" class="uri">https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html</a>.</p>
-<p>Please also note that simple R Markdown sites are <em>not</em> based on <strong>blogdown</strong>. They are probably good for websites with only a few Rmd documents. For larger-scale and more sophisticated websites (such as blogs), you may want to use <strong>blogdown</strong> instead: <a href="https://github.com/rstudio/blogdown" class="uri">https://github.com/rstudio/blogdown</a>.</p>
+<p>I am trying to do name matching with R. I found a nice package named fuzzyjoin. Sample code below can be found stackoverflow. <a href="https://stackoverflow.com/questions/47271685/fuzzy-matching-in-r" class="uri">https://stackoverflow.com/questions/47271685/fuzzy-matching-in-r</a></p>
+<pre class="r"><code>df1 &lt;- data.frame(id = c(1, 2, 3, 4, 5, 6),
+              entry = c(&quot;Apple&quot;, 
+                        &quot;I love apples&quot;, 
+                        &quot;appls&quot;,
+                        &quot;Bannanas&quot;,
+                        &quot;banana&quot;, 
+                        &quot;An apple a day keeps...&quot;))
+df1$entry &lt;- as.character(df1$entry)
+
+df2 &lt;- data.frame(fruit=c(&quot;apple&quot;,
+                          &quot;banana&quot;,
+                          &quot;pineapple&quot;),
+                  code=c(11, 12, 13))
+df2$fruit &lt;- as.character(df2$fruit)</code></pre>
+<pre class="r"><code>df1 %&gt;%
+  stringdist_left_join(df2, by=c(entry=&quot;fruit&quot;), ignore_case=T, method=&quot;jw&quot;, distance_col=&quot;dist&quot;) %&gt;%
+  group_by(entry) %&gt;%
+  top_n(-1) %&gt;%
+  select(-dist)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   entry [6]
+##      id entry                   fruit      code
+##   &lt;dbl&gt; &lt;chr&gt;                   &lt;chr&gt;     &lt;dbl&gt;
+## 1     1 Apple                   apple        11
+## 2     2 I love apples           pineapple    13
+## 3     3 appls                   apple        11
+## 4     4 Bannanas                banana       12
+## 5     5 banana                  banana       12
+## 6     6 An apple a day keeps... apple        11</code></pre>
 
 
 
